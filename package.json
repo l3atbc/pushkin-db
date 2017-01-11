@@ -1,0 +1,19 @@
+{
+  "name": "games-with-words-db-writer",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "postinstall": "knex migrate:latest"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "bookshelf": "^0.10.2",
+    "knex": "^0.12.6",
+    "pg": "^6.1.2",
+    "amqplib": "^0.5.1"
+  }
+}
