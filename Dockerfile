@@ -1,6 +1,6 @@
 FROM node:latest
 MAINTAINER Robert Wilkinson
-LABEL Name=whichenglish-api Version=0.0.1 
+LABEL Name=games-with-words-db-writer Version=0.0.1 
 RUN npm install -g nodemon
 RUN apt-get update
 RUN apt-get install -y netcat
