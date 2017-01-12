@@ -1,17 +1,7 @@
-const knex = require('knex')({
-  client: 'postgresql',
-  connection: process.env.DATABASE_URL
-});
-
-const Bookshelf = require('bookshelf')(knex);
 const amqp = require('amqplib');
+var db = require('./db');
 
-Bookshelf.plugin('registry');
-const Message = Bookshelf.Model.extend({
-  tableName: 'messages',
-  hasTimestamps: true
-});
-
+const Message = db.model('Message');
 amqp.connect(process.env.AMPQ_ADDRESS).then(conn => {
   process.once('SIGINT', function() {
     conn.close();
