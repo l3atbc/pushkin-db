@@ -11,9 +11,9 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "amqplib": "^0.5.1",
     "bookshelf": "^0.10.2",
     "knex": "^0.12.6",
-    "pg": "^6.1.2",
-    "amqplib": "^0.5.1"
+    "pg": "^6.1.2"
   }
 }
