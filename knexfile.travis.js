@@ -5,7 +5,7 @@ module.exports = {
   development: {
     client: 'postgresql',
     connection: {
-      database: 'games-with-words-development',
+      database: 'games_with_words_development',
       user:     'postgres',
     },
     pool: {
@@ -20,7 +20,7 @@ module.exports = {
   staging: {
     client: 'postgresql',
     connection: {
-      database: 'games-with-words-development',
+      database: 'games_with_words_development',
       user:     'postgres',
     },
     pool: {
@@ -35,7 +35,7 @@ module.exports = {
   production: {
     client: 'postgresql',
     connection: {
-      database: 'games-with-words-development',
+      database: 'games_with_words_development',
       user:     'postgres',
       password: 'password'
     },
