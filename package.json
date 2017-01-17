@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "mocha --reporter spec -t 10000 \"**/*.test.js\"",
     "postinstall": "../node_modules/.bin/knex migrate:latest"
   },
   "keywords": [],
@@ -17,5 +17,9 @@
     "knex": "^0.12.6",
     "lodash.flatten": "^4.4.0",
     "pg": "^6.1.2"
+  },
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "mocha": "^3.2.0"
   }
 }
