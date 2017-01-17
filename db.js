@@ -1,7 +1,4 @@
-const knex = require('knex')({
-  client: 'postgresql',
-  connection: process.env.DATABASE_URL
-});
+const knex = require('knex')(require('./knexfile.js').development);
 
 var fs = require('fs');
 var bookshelf = module.exports = require('bookshelf')(knex);

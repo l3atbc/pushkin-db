@@ -1,8 +1,9 @@
+/* eslint-env mocha */
+/* eslint-disable padded-blocks, no-unused-expressions, max-len */
   var db = require('../db');
   var expect = require('chai').expect;
   describe('Test worker', () => {
     let Worker;
-    let knex;
     let preloaded;
     before(() => {
       return db.knex.schema.createTable('test', table => {
@@ -21,7 +22,7 @@
         }).save().then(result => {
           preloaded = result.toJSON();
 
-        })
+        });
       });
     })
     describe('createTest', () => {
@@ -104,10 +105,10 @@
         expect(Worker).to.haveOwnProperty('allTestModels')
       });
       it('returns all the data in db', () => {
-        return Worker.allTestModels().then(results = {
-          expect(results)to.have.length(1)
+        return Worker.allTestModels().then(results => {
+          expect(results).to.have.length(1)
         })
-      }
+      })
     });
 
 
