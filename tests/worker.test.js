@@ -110,6 +110,11 @@
         })
       })
     });
+    describe('getInitialQuestion', () => {
+      it('has a method getInitalQuestions', () => {
+        expect(Worker).to.haveOwnProperty('getInitialQuestions');
+      })
+    })
 
 
     after(() => {

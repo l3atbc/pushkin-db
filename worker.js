@@ -85,13 +85,17 @@ function Worker() {
      * 
      * 
      * @method Worker#queryModel
-     * @param {string[][]} query
+     * @param {string[][]} query - a knex.js query array
+     * @param {string[]} relations - an Array of relations
      * @returns {Object[]} An array of models returned
      */
-    this[`query${modelName}`] = function(query) {
+    this[`query${modelName}`] = function(query, relations) {
       var p = query.reduce((prev, curr) => {
         return prev.query.apply(prev, curr)
       }, Model)
+      if(relations) {
+      return p.fetchAll({ withRelated: relations }).then(data => data.toJSON());
+      }
       return p.fetchAll().then(data => data.toJSON());
     }
     /**
@@ -113,16 +117,29 @@ function Worker() {
     /**
      * 
      * 
-     * Rertun all models in DB
+     * Retun all models in DB
      * @method Worker#allModels
      * @returns {Object[]}  all models in DB
      */
     this[`all${modelName}s`] = function() {
       return Model.fetchAll().then(data => data.toJSON());
-
     }
-
   })
+    /**
+     * 
+     * 
+     * Retun all models in DB
+     * @method Worker#getInitialQuestions
+     * @param {string} trialName - The name of the trial looking for inital questions for
+     * @returns {Object[]}  questions for that Trial
+     */
+    this.getInitialQuestions =  function(trialName) {
+      return db.model('Question').forge().query(qb => {
+        qb.offset(0).limit(2);
+      }).fetchAll({withRelated: 'choices'}).then(data => {
+        return data.toJSON();
+      })
+    }
 }
 
 module.exports = new Worker();
