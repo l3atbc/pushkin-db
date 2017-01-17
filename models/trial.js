@@ -3,8 +3,9 @@ module.exports = db => {
   const Trial = db.Model.extend({
     tableName: 'trials',
     questions() {
-      this.hasMany('Question');
-    }
+      return this.hasMany('Question', 'trialId');
+    },
+    hasTimestamps: true,
   });
   return db.model('Trial', Trial);
 };
