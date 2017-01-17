@@ -2,11 +2,9 @@ language: node_js
 node_js: stable
 before_install:
    # Repo for newer Node.js versions
-  - sudo apt-get -qq update
-  - sudo apt-get -qq install g++-4.8
   - cp knexfile.travis.js knexfile.js
   - npm install -g knex
-  - psql -c 'create database games-with-words-development;' -U postgres
+  - psql -c "create database 'games-with-words-development';" -U postgres
 env:
   - CXX=g++-4.8
 before_script:
