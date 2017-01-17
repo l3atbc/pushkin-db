@@ -10,7 +10,7 @@ add custom methods in `worker.js` to do custom functionality
 By default the worker has the standard CRUD operations automatically created by creating the model name in the `./models` directory.
 Example:
   by creating a bookshelf model `User` the following worker methods are created automatically:
-  * `createUser(user: UserSchema)`
+  * `createUser(user: UserSchema): User`
   * `updateUser(id: number, fields: any): User || Error` takes an id and updates any and all fields from an arbitrary JS object
   * `deleteUser(id: number): number || Error` Takes a userId and removes that user, returns 0 for success or an Error
   * `findUser(id: number, relations: string[]]): User || null || Error` takes a userId and an optional array of relations and find that user, returning all fields, and all fields defined on the named relations

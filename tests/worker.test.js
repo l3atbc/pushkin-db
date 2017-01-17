@@ -11,7 +11,6 @@
         table.string('name')
         return table;
       }).then(() => {
-        console.log('table')
         const TestModel = db.Model.extend({
           tableName: 'test',
         });
@@ -82,7 +81,8 @@
       it('can query a TestModel based on knex js syntax', () => {
         // TODO: test smell, move the creation and the deletion into before each
         const query = [
-          ['name', '=', 'test-data'],
+          ['where', 'name', '=', 'test-data'],
+          ['where', 'id', '<', 100 ],
         ];
         return Worker.queryTestModel(query).then(response => {
           expect(response).to.have.length(1);
@@ -92,11 +92,11 @@
     });
     describe('rawTestModel', () => {
       it('has a rawTestModel method', () => {
-        expect(Worker).to.haveOwnProprty('rawTestModel');
+        expect(Worker).to.haveOwnProperty('rawTestModel');
       });
       it('can execute arbitrary query strings through that method', () => {
-        return Worker.rawTestModel(`SELECT COUNT(*) from tests`).then((response) => {
-          expect(response).to.eql(1);
+        return Worker.rawTestModel(`SELECT COUNT(*) from test`).then((response) => {
+          expect(response[0].count).to.eql('1');
         })
       })
     });
