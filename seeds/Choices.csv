@@ -1,0 +1,7 @@
+type,imageUrl,displayText,question
+survey-multi-choice,http://www.gameswithwords.org/WhichEnglish/images/2_1.jpg,,Click on the picture that best matches the sentence: It was the chicken that scared the lion
+survey-multi-choice,http://www.gameswithwords.org/WhichEnglish/images/2_2.jpg,,Click on the picture that best matches the sentence: It was the chicken that scared the lion
+survey-multi-choice,http://www.gameswithwords.org/WhichEnglish/images/2_1.jpg,,Click on the picture that best matches the sentence: It was the tiger that scared the lion
+survey-multi-choice,http://www.gameswithwords.org/WhichEnglish/images/2_2.jpg,,Click on the picture that best matches the sentence: It was the tiger that scared the lion
+survey-multi-choice,http://www.gameswithwords.org/WhichEnglish/images/2_1.jpg,,Click on the picture that best matches the sentence: It was the lion that scared the chicken
+survey-multi-choice,http://www.gameswithwords.org/WhichEnglish/images/2_2.jpg,,Click on the picture that best matches the sentence: It was the lion that scared the chicken

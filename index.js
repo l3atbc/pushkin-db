@@ -1,17 +1,7 @@
-const knex = require('knex')({
-  client: 'postgresql',
-  connection: process.env.DATABASE_URL
-});
-
-const Bookshelf = require('bookshelf')(knex);
 const amqp = require('amqplib');
+var db = require('./db');
 
-Bookshelf.plugin('registry');
-const Message = Bookshelf.Model.extend({
-  tableName: 'messages',
-  hasTimestamps: true
-});
-
+const Message = db.model('Message');
 amqp.connect(process.env.AMPQ_ADDRESS).then(conn => {
   process.once('SIGINT', function() {
     conn.close();
@@ -27,15 +17,18 @@ amqp.connect(process.env.AMPQ_ADDRESS).then(conn => {
       })
       .then(() => {
         // consume messages
-        var consumeFunc = msg => {
-          console.log(' [x] Received %s', msg.content.toString());
-          const message = new Message({ text: msg.content.toString() });
+        return ch.consume(
+          q,
+          function(msg) {
+            console.log(' [x] Received %s', msg.content.toString());
+            const message = new Message({ text: msg.content.toString() });
 
-          return message.save().then(() => {
-            ch.ack(msg);
-          });
-        };
-        return ch.consume(q, consumeFunc, { noAck: false });
+            return message.save().then(() => {
+              ch.ack(msg);
+            });
+          },
+          { noAck: false }
+        );
       });
     return ok.then(() => {
       console.log(' [*] Waiting for messages in %s. To exit press CTRL+C', q);
