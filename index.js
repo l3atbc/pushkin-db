@@ -1,56 +1,26 @@
 const amqp = require('amqplib');
 var db = require('./db');
 
-const Message = db.model('Message');
-amqp.connect(process.env.AMPQ_ADDRESS).then(conn => {
-  process.once('SIGINT', function() {
-    conn.close();
-  });
-  // Db Write
-  return conn.createChannel().then(ch => {
-    const q = 'db_queue';
-    const ok = ch.assertQueue(q, { durable: true });
-    // prefetch due to multiple db writers
-    ok
-      .then(() => {
-        ch.prefetch(1);
-      })
-      .then(() => {
-        // consume messages
-        return ch.consume(
-          q,
-          function(msg) {
-            console.log(' [x] Received %s', msg.content.toString());
-            const message = new Message({ text: msg.content.toString() });
-
-            return message.save().then(() => {
-              ch.ack(msg);
-            });
-          },
-          { noAck: false }
-        );
-      });
-    return ok.then(() => {
-      console.log(' [*] Waiting for messages in %s. To exit press CTRL+C', q);
-    });
-  });
-});
+const Trial = db.model('Trial');
+const TrialCollection = db.Collection.extend({
+  model: Trial
+})
+const Worker = require('./worker');
 amqp.connect(process.env.AMPQ_ADDRESS).then(conn => {
   return conn.createChannel().then(ch => {
     process.once('SIGINT', function() {
       conn.close();
     });
-    const q = 'db_read';
+    const q = 'db_worker';
     const ok = ch.assertQueue(q, { durable: false }).then(() => {
       ch.prefetch(1);
       return ch.consume(q, function reply(msg) {
-        const n = parseInt(msg.content.toString());
-        console.log(' [.] fib(%d)', n);
-        const r = n * 1000;
-        return Message.fetchAll().then(messages => {
+        var rpc = JSON.parse(msg.content.toString('utf8'));
+        console.log(rpc.method, rpc.arguments)
+        return Worker[rpc.method].apply(Worker, rpc.arguments).then(data => {
           ch.sendToQueue(
             msg.properties.replyTo,
-            new Buffer(JSON.stringify(messages)),
+            new Buffer(JSON.stringify(data)),
             { correlationId: msg.properties.correlationId }
           );
           ch.ack(msg);
