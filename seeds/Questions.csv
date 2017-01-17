@@ -1,0 +1,4 @@
+type,prompt,trial
+survey-multi-choice,Click on the picture that best matches the sentence: It was the chicken that scared the lion,WhichEnglish
+survey-multi-choice,Click on the picture that best matches the sentence: It was the tiger that scared the lion,WhichEnglish
+survey-multi-choice,Click on the picture that best matches the sentence: It was the lion that scared the chicken,WhichEnglish
