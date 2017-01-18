@@ -27,8 +27,22 @@ amqp.connect(process.env.AMPQ_ADDRESS).then(conn => {
         });
       });
     });
+    ok = ok.then(() => {
+      return ch.assertQueue('db_write', { durable: true }).then(() => {
+        ch.prefetch(1);
+        return ch.consume('db_write', function reply(msg) {
+        console.log('DB WRITE QUEUE', msg.content.toString('utf8'))
+          var rpc = JSON.parse(msg.content.toString('utf8'));
+          return Worker[rpc.method].apply(Worker, rpc.arguments).then(data => {
+            console.log(data, 'was saved in db')
+            return ch.ack(msg);
+          })
+        })
+      })
+    });
+
     return ok.then(ch => {
-      console.log(' [x] Awaiting RPC requests');
+      console.log(' [x] Awaiting requests');
     });
   });
 });
