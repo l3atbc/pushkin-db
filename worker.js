@@ -137,8 +137,35 @@ function Worker() {
       return db.model('Question').forge().query(qb => {
         qb.offset(0).limit(2);
       }).fetchAll({withRelated: 'choices'}).then(data => {
-        return data.toJSON();
+        return db.model('User').forge().save().then(user => {
+          const json = data.toJSON();
+          return {
+            questions: json,
+            user: user.toJSON()
+          }
+        })
       })
+    }
+    this.setUserLanguages = function(userId, {primaryLanguages, nativeLanguages }) {
+      return Promise.all(primaryLanguages.map(lang => db.knex.raw('INSERT into "userLanguages" ("userId", "primary", "native", "languageId") SELECT ?, ?, ?, id from languages WHERE name = ? RETURNING *', [
+        userId, 
+        true,
+        false,
+        lang,
+      ]).then(resp => resp.rows))).then(data => {
+        return Promise.all(
+          nativeLanguages.map(lang => 
+            db.knex.raw('INSERT into "userLanguages" ("userId", "primary", "native", "languageId") SELECT ?, ?, ?, id from languages WHERE name = ? RETURNING *', [
+              userId, 
+              false,
+              true,
+              lang,
+            ])
+            .then(resp => resp.rows)))
+            .then(stuff => {
+              return db.model('User').where({ id: userId }).fetch({ withRelated: ['userLanguages.language'] }).then(data => data.toJSON());
+            })
+        })
     }
 }
 

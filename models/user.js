@@ -5,15 +5,15 @@ module.exports = db => {
   const User = db.Model.extend({
     tableName: 'users',
     responses() {
-      return this.hasMany('Response');
+      return this.hasMany('Response', 'userId');
     },
     userLanguages() {
-      return this.hasMany('UserLanguage');
+      return this.hasMany('UserLanguage', 'userId');
     },
     languages() {
       return this
         .hasMany('Language', 'userId')
-        .through('UserLanguage', 'userId', 'languageId');
+        .through('UserLanguage', 'id', 'trash');
     }
   });
   return db.model('User', User);

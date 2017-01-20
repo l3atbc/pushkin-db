@@ -8,7 +8,7 @@ module.exports = db => {
       this.belongsTo('Question', 'questionId');
     },
     responses() {
-      return this.hasMany('Response');
+      return this.hasMany('Response', 'choiceId');
     }
   });
   return db.model('Choice', Choice);

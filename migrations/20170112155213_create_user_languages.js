@@ -3,10 +3,10 @@
 exports.up = function(knex, Promise) {
   return knex.schema.createTable('userLanguages', table => {
     table.increments();
-    table.boolean('prime');
-    table.boolean('national');
+    table.boolean('primary');
+    table.boolean('native');
     table.integer('userId').references('id').inTable('users');
-    table.integer('languageId').references('id').inTable('languages');
+    table.integer('languageId').references('id').inTable('languages').onDelete('CASCADE');
   });
 };
 
