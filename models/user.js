@@ -4,6 +4,7 @@
 module.exports = db => {
   const User = db.Model.extend({
     tableName: 'users',
+    idAttributes: 'id',
     responses() {
       return this.hasMany('Response', 'userId');
     },

@@ -69,7 +69,7 @@ function Worker() {
      * @returns {Object} The newly updated model
      */
     this[`update${modelName}`] = function(id, data) {
-      return new Model({id: id }).save(data).then(updated  =>  updated.toJSON())
+      return Model.where({id: id }).save(data, { patch: true }).then(updated  =>  updated.toJSON())
     }
     /**
      * 

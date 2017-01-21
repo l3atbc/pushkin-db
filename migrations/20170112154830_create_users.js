@@ -5,6 +5,8 @@ exports.up = function(knex, Promise) {
     table.increments().primary();
     table.timestamps();
     table.string('name');
+    table.integer('englishYears');
+    table.boolean('householdEnglish');
   });
 };
 
