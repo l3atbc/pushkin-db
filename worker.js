@@ -1,4 +1,6 @@
 var db = require('./db');
+var _ = require('lodash');
+
 
 /**
  * 
@@ -167,6 +169,66 @@ function Worker() {
             })
         })
     }
+    this.getResults = function(userId) {
+      return db.knex('users')
+        .select('responses.*')
+        .join('responses', 'responses.userId', '=', 'users.id')
+        .then(choices => {
+          let obj = {};
+            choices.forEach(response => {
+              if (Array.isArray(obj[response.userId])) {
+                obj[response.userId].push(response.choiceId)
+              } else {
+                obj[response.userId] = [response.choiceId]
+              }
+            })
+          return obj;
+        }).then(keymap => {
+          let userArray = keymap[userId];
+          if(userArray) {
+            delete keymap[userId];
+            var output = [];
+            userArray = userArray.sort();
+            for (var prop in keymap) {
+              keymap[prop] = keymap[prop].sort();
+              output.push({
+                match: intersect_safe(userArray, keymap[prop]).length,
+                userId: prop,
+              })
+            }
+            return output;
+          }
+
+        }).then(output => {
+          if(output) {
+            console.log(output);
+            let users = _.take(_.orderBy(output, 'match', 'desc'), 3);
+            return db.knex('users').distinct('languages.name').select('languages.name').whereIn('users.id', users.map(u => u.userId))
+            .join('userLanguages', 'users.id', 'userLanguages.userId')
+            .join('languages', 'userLanguages.languageId', 'languages.id')
+          }
+          return null;
+        })
+    }
+}
+function intersect_safe(a, b)
+{
+  var ai=0, bi=0;
+  var result = [];
+
+  while( ai < a.length && bi < b.length )
+  {
+     if      (a[ai] < b[bi] ){ ai++; }
+     else if (a[ai] > b[bi] ){ bi++; }
+     else /* they're equal */
+     {
+       result.push(a[ai]);
+       ai++;
+       bi++;
+     }
+  }
+
+  return result;
 }
 
 module.exports = new Worker();

@@ -5,7 +5,7 @@ exports.up = function(knex, Promise) {
     table.increments().primary();
     table.timestamps();
     table.integer('userId').references('id').inTable('users');
-    table.integer('choiceId').references('id').inTable('choices');
+    table.integer('choiceId').references('id').inTable('choices').onDelete('CASCADE');
   });
 };
 
