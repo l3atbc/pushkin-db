@@ -5,6 +5,11 @@ exports.up = function(knex, Promise) {
     table.increments().primary();
     table.timestamps();
     table.string('name');
+    table.integer('age');
+    table.string('education');
+    table.string('gender');
+    table.boolean('languageDisorder');
+    table.boolean('takenBefore');
     table.integer('englishYears');
     table.boolean('householdEnglish');
   });

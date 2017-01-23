@@ -181,11 +181,11 @@ function Worker() {
               } else {
                 obj[response.userId] = [response.choiceId]
               }
-            })
+            });
           return obj;
         }).then(keymap => {
           let userArray = keymap[userId];
-          if(userArray) {
+          if (userArray) {
             delete keymap[userId];
             var output = [];
             userArray = userArray.sort();
@@ -198,7 +198,6 @@ function Worker() {
             }
             return output;
           }
-
         }).then(output => {
           if(output) {
             console.log(output);
