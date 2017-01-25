@@ -12,12 +12,22 @@ let languages = data[3].data
 
 db.knex('choices').del().then(() => {
   return db.knex('questions').del()
+}).then(() => {
+  return db.knex('userLanguages').del()
+})
+.then(() => {
+  return db.knex('responses').del()
+})
+.then(() => {
+  return db.knex('users').del();
 })
 .then(() => {
   return db.knex('trials').del();
-}).then(() => {
+})
+.then(() => {
   return db.knex('languages').del();
-}).then(() => {
+})
+.then(() => {
   return db.knex('trials').insert(trials).returning('*')
 })
 .then(rows => {

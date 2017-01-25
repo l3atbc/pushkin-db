@@ -1,5 +1,6 @@
 var db = require('./db');
 var _ = require('lodash');
+var util = require('util');
 
 
 /**
@@ -192,7 +193,7 @@ function Worker() {
             for (var prop in keymap) {
               keymap[prop] = keymap[prop].sort();
               output.push({
-                match: intersect_safe(userArray, keymap[prop]).length,
+                match: intersect_safe(userArray, keymap[prop].sort()).length,
                 userId: prop,
               })
             }
