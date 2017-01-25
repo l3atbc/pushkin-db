@@ -12,6 +12,9 @@ exports.up = function(knex, Promise) {
     table.boolean('takenBefore');
     table.integer('englishYears');
     table.boolean('householdEnglish');
+    table.string('countriesOfResidence');
+    table.integer('learnAge');
+
   });
 };
 
