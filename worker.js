@@ -177,7 +177,6 @@ function Worker() {
       .join('questions', 'choices.questionId', '=', 'questions.id')
       .select('users.*','questions.prompt','choices.imageUrl', 'choices.displayText', 'choices.correctAnswer', 'choices.type')
       .then(data => {
-        console.log("data", data);
         return Papa.unparse(data);
       })
     }
