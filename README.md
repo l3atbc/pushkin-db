@@ -14,7 +14,7 @@ add custom methods in `worker.js` to do custom functionality
 * uses Bookshelf.js/knex.js as its core ORM for an easiliy extensible way to define models
 * provides an easy to use structure for seeds
 * tested
-![Default DB Schema]('./db_schema.png)
+![Default DB Schema]('db_schema.png)
 
 
 # Get started
