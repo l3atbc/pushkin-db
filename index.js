@@ -19,6 +19,10 @@ amqp.connect(process.env.AMPQ_ADDRESS).then(conn => {
       return ch.consume(q, function reply(msg) {
         var rpc = JSON.parse(msg.content.toString('utf8'));
         winston.info('db_rpc_worker', {rpc, msg })
+        if(typeof Worker[rpc.method] === 'undefined') {
+          console.log(rpc);
+          throw new Error(`This method ${rpc.method} is not defined on the worker`);
+        }
         return Worker[rpc.method].apply(Worker, rpc.arguments).then(data => {
           winston.info(data)
           ch.sendToQueue(
@@ -50,4 +54,4 @@ amqp.connect(process.env.AMPQ_ADDRESS).then(conn => {
   });
 });
 
-winston.handleExceptions(winston.transports);
+// winston.handleExceptions(winston.transports);
