@@ -1,7 +1,7 @@
 var db = require('./db');
 var _ = require('lodash');
 var util = require('util');
-
+const Papa = require('babyparse');
 
 /**
  * 
@@ -169,6 +169,17 @@ function Worker() {
               return db.model('User').where({ id: userId }).fetch({ withRelated: ['userLanguages.language'] }).then(data => data.toJSON());
             })
         })
+    }
+    this.getResponseCsv = function() {
+      return db.knex('users')
+      .join('responses', 'responses.userId', '=', 'users.id')
+      .join('choices', 'choices.id', '=', 'responses.choiceId')
+      .join('questions', 'choices.questionId', '=', 'questions.id')
+      .select('users.*','questions.prompt','choices.imageUrl', 'choices.displayText', 'choices.correctAnswer', 'choices.type')
+      .then(data => {
+        console.log("data", data);
+        return Papa.unparse(data);
+      })
     }
     this.getResults = function(userId) {
       return db.knex('users')
