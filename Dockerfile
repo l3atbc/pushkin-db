@@ -10,4 +10,4 @@ RUN mkdir -p /usr/src/app && mv /tmp/node_modules /usr/src/app
 WORKDIR /usr/src/app
 COPY . /usr/src/app
 RUN npm install knex
-CMD npm start
+CMD node index.js
