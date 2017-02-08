@@ -1,13 +1,11 @@
 FROM node:latest
 MAINTAINER Robert Wilkinson
-LABEL Name=games-with-words-db-writer Version=0.0.1 
-RUN npm install -g nodemon
+LABEL Name=pushkin-db Version=0.0.1 
 RUN apt-get update
 RUN apt-get install -y netcat
 COPY package.json /tmp/package.json
-RUN cd /tmp && npm install --production
+RUN cd /tmp/ && npm install --production
 RUN mkdir -p /usr/src/app && mv /tmp/node_modules /usr/src/app
 WORKDIR /usr/src/app
 COPY . /usr/src/app
-RUN npm install knex
 CMD node index.js
