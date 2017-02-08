@@ -6,6 +6,7 @@ exports.up = function(knex, Promise) {
     table.string('type');
     table.string('imageUrl');
     table.string('displayText');
+    table.boolean('correct');
     table.integer('questionId').references('id').inTable('questions');
   });
 };

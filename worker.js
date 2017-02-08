@@ -175,7 +175,7 @@ function Worker() {
       .join('responses', 'responses.userId', '=', 'users.id')
       .join('choices', 'choices.id', '=', 'responses.choiceId')
       .join('questions', 'choices.questionId', '=', 'questions.id')
-      .select('users.*','questions.prompt','choices.imageUrl', 'choices.displayText', 'choices.correctAnswer', 'choices.type')
+      .select('users.*','questions.prompt','choices.imageUrl', 'choices.displayText', 'choices.correct', 'choices.type')
       .then(data => {
         return Papa.unparse(data);
       })
