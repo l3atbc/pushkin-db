@@ -25,7 +25,7 @@ amqp.connect(process.env.AMPQ_ADDRESS).then((conn) =>
        return ch.consume(DB_RPC_WORKER, (msg) => {
         // parse the message into a javascript object
          const rpc = JSON.parse(msg.content.toString('utf8'));
-         winston.info('db_rpc_worker', {rpc, msg })
+         winston.info('db_rpc_worker', { rpc, msg });
 
         //  check that this method is defined on the Worker
          if (typeof Worker[rpc.method] === 'undefined') {
