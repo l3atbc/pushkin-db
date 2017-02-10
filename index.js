@@ -25,7 +25,11 @@ amqp.connect(process.env.AMPQ_ADDRESS).then((conn) =>
        return ch.consume(DB_RPC_WORKER, (msg) => {
         // parse the message into a javascript object
          const rpc = JSON.parse(msg.content.toString('utf8'));
-         winston.info('db_rpc_worker', { rpc, msg });
+         winston.log('db_rpc_worker', { rpc });
+         winston.log('correlation_id', msg.correlationId);
+         winston.log('routing_key', msg.routingKey);
+         winston.log('reply_to', msg.replyTo);
+
 
         //  check that this method is defined on the Worker
          if (typeof Worker[rpc.method] === 'undefined') {
@@ -37,7 +41,7 @@ amqp.connect(process.env.AMPQ_ADDRESS).then((conn) =>
          }
         // call the Worker with the defined method
          return Worker[rpc.method].apply(Worker, rpc.arguments).then((data) => {
-           winston.info(data);
+           winston.log('Worker result', data);
           // send to the queue with the original replyTo, 
           // pass it back with the correlation ID given
            ch.sendToQueue(
