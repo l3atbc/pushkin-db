@@ -5,7 +5,7 @@ const knex = require('knex')(require('./knexfile.js').development);
 // config for transaction DB
 const config = {
   client: 'postgresql',
-  connection: 'postgres://postgres:postgres@transactiondb/transactions'
+  connection: process.env.TRANSACTION_DATABASE_URL,
 };
 
 // create connection to transaction db
