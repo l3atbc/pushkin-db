@@ -26,7 +26,6 @@ add custom methods in `worker.js` to do custom functionality
 * Change the timezone to whatever you want by setting the `TZ` env variable in the `Dockerfile`
 * Share and publish other scripts that you may find useful
 
-
 <a name="Worker"></a>
 
 ## Worker
@@ -34,81 +33,136 @@ add custom methods in `worker.js` to do custom functionality
 
 * [Worker](#Worker)
     * [new Worker()](#new_Worker_new)
-    * [.createModel(data)](#Worker+createModel) ⇒ <code>any</code>
-    * [.findModel(id, [relations])](#Worker+findModel) ⇒ <code>Object</code>
-    * [.updateModel(id, data)](#Worker+updateModel) ⇒ <code>Object</code>
+    * [.createModel(data)](#Worker+createModel) ⇒ <code>Promise</code>
+    * [.findModel(id, [relations])](#Worker+findModel) ⇒ <code>Promise</code>
+    * [.updateModel(id, data)](#Worker+updateModel) ⇒ <code>Promise</code>
     * [.deleteModel(id)](#Worker+deleteModel) ⇒ <code>Number</code>
-    * [.queryModel(query, relations)](#Worker+queryModel) ⇒ <code>Array.&lt;Object&gt;</code>
-    * [.rawModel(query)](#Worker+rawModel) ⇒ <code>Array.&lt;Object&gt;</code>
-    * [.allModels()](#Worker+allModels) ⇒ <code>Array.&lt;Object&gt;</code>
-    * [.getInitialQuestions(trialName)](#Worker+getInitialQuestions) ⇒ <code>Array.&lt;Object&gt;</code>
+    * [.queryModel(query, relations)](#Worker+queryModel) ⇒ <code>Promise</code>
+    * [.rawModel(query)](#Worker+rawModel) ⇒ <code>Promise</code>
+    * [.allModels()](#Worker+allModels) ⇒ <code>Promise</code>
+    * [.getInitialQuestions(trialName)](#Worker+getInitialQuestions) ⇒ <code>Promise</code>
+    * [.setUserLanguages(userId, set)](#Worker+setUserLanguages) ⇒ <code>Promise</code>
+    * [.getResults(userId)](#Worker+getResults) ⇒ <code>Promise</code>
 
 <a name="new_Worker_new"></a>
 
 ### new Worker()
 DB writer and reader class with automatically generated methods
+**These methods are created automatically based off what it defined by bookshelf**
 
 <a name="Worker+createModel"></a>
 
-### worker.createModel(data) ⇒ <code>any</code>
+### worker.createModel(data) ⇒ <code>Promise</code>
+
 Create a new Model in the DB
 
 **Kind**: instance method of <code>[Worker](#Worker)</code>
-**Returns**: <code>any</code> - The saved model
+
+**Returns**: <code>Promise</code> - The saved model
+
+**Fulfill**: <code>Object</code>
+
+**Reject**: <code>Error</code>
 
 | Param | Type | Description |
 | --- | --- | --- |
 | data | <code>any</code> | model to be created |
 
+**Example**
+
+```js
+createUser({ name: "Methuselah", age: 1000 })
+```
 <a name="Worker+findModel"></a>
 
-### worker.findModel(id, [relations]) ⇒ <code>Object</code>
+### worker.findModel(id, [relations]) ⇒ <code>Promise</code>
+
 **Kind**: instance method of <code>[Worker](#Worker)</code>
-**Returns**: <code>Object</code> - The model with its relations
+
+**Fulfill**: <code>Object</code> - The found model
+
+**Reject**: <code>Error</code>
 
 | Param | Type | Description |
 | --- | --- | --- |
 | id | <code>number</code> | The id of the model looking for |
 | [relations] | <code>Array.&lt;string&gt;</code> | an array of related models to fetch |
 
+**Example**
+
+```js
+findUser(1, ['posts'])
+```
 <a name="Worker+updateModel"></a>
 
-### worker.updateModel(id, data) ⇒ <code>Object</code>
+### worker.updateModel(id, data) ⇒ <code>Promise</code>
+
 **Kind**: instance method of <code>[Worker](#Worker)</code>
-**Returns**: <code>Object</code> - The newly updated model
+
+**Fulfill**: <code>Object</code> - The newly updated model
+
+**Reject**: <code>Error</code>
 
 | Param | Type | Description |
 | --- | --- | --- |
 | id | <code>number</code> | the id of the model being updated |
 | data | <code>Object</code> | the data to update |
 
+**Example**
+
+```js
+updateUser(1, { age: 969 })
+```
 <a name="Worker+deleteModel"></a>
 
 ### worker.deleteModel(id) ⇒ <code>Number</code>
+
 **Kind**: instance method of <code>[Worker](#Worker)</code>
+
 **Returns**: <code>Number</code> - 0 if success
 
 | Param | Type | Description |
 | --- | --- | --- |
 | id | <code>Number</code> | the id of the model to be deleted |
 
+**Example**
+```js
+deleteUser(1);
+```
 <a name="Worker+queryModel"></a>
 
-### worker.queryModel(query, relations) ⇒ <code>Array.&lt;Object&gt;</code>
+### worker.queryModel(query, relations) ⇒ <code>Promise</code>
+
 **Kind**: instance method of <code>[Worker](#Worker)</code>
-**Returns**: <code>Array.&lt;Object&gt;</code> - An array of models returned
+
+**Fulfill**: <code>Object[]</code> - An array of models returned
+
+**Reject**: <code>Error</code>
 
 | Param | Type | Description |
 | --- | --- | --- |
-| query | <code>Array.&lt;Array.&lt;string&gt;&gt;</code> | a knex.js query array |
+| query | <code>Array.&lt;Array.&lt;string&gt;&gt;</code> | a knex.js query array see http://knexjs.org/#Builder |
 | relations | <code>Array.&lt;string&gt;</code> | an Array of relations |
 
+**Example**
+```js
+queryModel([
+ ['where', 'other_id', '=', '5'],
+ ['where', 'name', '=', 'foo']
+],
+['posts']
+)
+```
 <a name="Worker+rawModel"></a>
 
-### worker.rawModel(query) ⇒ <code>Array.&lt;Object&gt;</code>
+### worker.rawModel(query) ⇒ <code>Promise</code>
 Allows raw queries on DB
 
 **Kind**: instance method of <code>[Worker](#Worker)</code>
+
+**Fulfill**: <code>Object[]</code> - an array of results
+
+**Reject**: <code>Error</code>
 
 | Param | Type | Description |
 | --- | --- | --- |
@@ -116,26 +170,82 @@ Allows raw queries on DB
 
 **Example**
 ```js
-rawModel([
-  ['where', 'name', '=', 'foo'],
-  ['where', 'age', '<', 20 ],
+rawUser([
+  ['where', 'name', '=', 'Methuselah'],
+  ['where', 'age', '>', 900 ],
 ])
 ```
 <a name="Worker+allModels"></a>
 
-### worker.allModels() ⇒ <code>Array.&lt;Object&gt;</code>
-Retun all models in DB
+### worker.allModels() ⇒ <code>Promise</code>
+Return all models in DB
 
 **Kind**: instance method of <code>[Worker](#Worker)</code>
-**Returns**: <code>Array.&lt;Object&gt;</code> - all models in DB
+
+**Fulfill**: <code>Object[]</code> -  all models in DB
+
+**Reject**: <code>Error</code>
+
+**Example**
+
+```js
+allUsers()
+```
 <a name="Worker+getInitialQuestions"></a>
 
-### worker.getInitialQuestions(trialName) ⇒ <code>Array.&lt;Object&gt;</code>
-Retun all models in DB
+### worker.getInitialQuestions(trialName) ⇒ <code>Promise</code>
+Return all models in DB
 
 **Kind**: instance method of <code>[Worker](#Worker)</code>
-**Returns**: <code>Array.&lt;Object&gt;</code> - questions for that Trial
+
+**Fulfill**: <code>Object[]</code> -   questions for that Trial
+
+**Reject**: <code>Error</code>
+
+**Todo**
+- [ ] Make this query on the trial Name
+
 
 | Param | Type | Description |
 | --- | --- | --- |
 | trialName | <code>string</code> | The name of the trial looking for inital questions for |
+
+<a name="Worker+setUserLanguages"></a>
+
+### worker.setUserLanguages(userId, set) ⇒ <code>Promise</code>
+Sets a users Languages
+
+**Kind**: instance method of <code>[Worker](#Worker)</code>
+
+**Fulfill**: <code>Object</code> - the user with their languages
+
+**Rejects**: <code>Error</code>
+
+| Param | Type | Description |
+| --- | --- | --- |
+| userId | <code>number</code> | the name of the id to set |
+| set | <code>Object</code> |  |
+| set.primaryLanguages | <code>Array.&lt;String&gt;</code> | the user's primary Languages |
+| set.nativeLanguages | <code>Array.&lt;String&gt;</code> | the user's native Languages |
+
+**Example**
+```js
+setUserLanguages(1, {
+ primaryLanguages: ["Hebrew", "Aramaic"],
+nativeLanguages: ["Hebrew"]
+})
+```
+<a name="Worker+getResults"></a>
+
+### worker.getResults(userId) ⇒ <code>Promise</code>
+Get the results from the DB
+
+**Kind**: instance method of <code>[Worker](#Worker)</code>
+
+**Fulfill**: <code>Object[]</code> - an array of the top 3 languages for this user
+
+**Rejects**: <code>Error</code>
+
+| Param | Type | Description |
+| --- | --- | --- |
+| userId | <code>number</code> | the user whose results you are grabbing |
