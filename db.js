@@ -9,20 +9,21 @@ const config = {
 };
 
 // create connection to transaction db
-const db2 = require('knex')(config)
+const db2 = require('knex')(config);
 
 // test db connection
 db2.raw('select 1+1 as result').then(() => {
-  console.log('valid connection..');
+  console.log('valid connection....to transaction db');
 });
 
+// whenever there is a query, save result in second db
 // whenever there is a query, save result in second db
 knex.on('query-response', function(one, two, three) {
   const obj = {
     bindings: three.toSQL().bindings,
     query: three.toSQL().sql,
   };
-  return db2('transactions').insert(obj);
+  return db2('transactions').insert(obj).then()
 });
 
 // instantiate bookshelf models
