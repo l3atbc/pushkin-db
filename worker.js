@@ -274,7 +274,7 @@ function Worker() {
           .join('userLanguages', 'users.id', 'userLanguages.userId')
           .join('languages', 'userLanguages.languageId', 'languages.id')
         }
-        return null;
+        return {};
       });
   };
 }
