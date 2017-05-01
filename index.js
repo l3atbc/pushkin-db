@@ -71,7 +71,7 @@ amqp.connect(process.env.AMPQ_ADDRESS).then(conn =>
       });
     });
 
-    return ok.then(ch => {
+    return ok.then(() => {
       winston.log(' [x] Awaiting requests');
     });
   })
