@@ -1,6 +1,5 @@
 // create the actual db connection
 const knex = require('knex')(require('./knexfile.js').development);
-
 // config for transaction DB
 const config = {
   client: 'postgresql',
@@ -33,13 +32,15 @@ const fs = require('fs');
 const modelObj = {};
 const modelDirectories = fs.readdirSync('./models');
 modelDirectories.forEach(function(folder) {
-  const bookshelf = require('bookshelf')(knex);
-  bookshelf.plugin('registry');
-  const models = fs.readdirSync(`./models/${folder}`);
-  models.forEach(model => {
-    require(`./models/${folder}/${model}`)(bookshelf);
-  });
-  modelObj[folder] = bookshelf;
+  const isFolder = fs.lstatSync(`./models/${folder}`).isDirectory();
+  if (isFolder) {
+    const bookshelf = require('bookshelf')(knex);
+    bookshelf.plugin('registry');
+    const models = fs.readdirSync(`./models/${folder}`);
+    models.forEach(model => {
+      require(`./models/${folder}/${model}`)(bookshelf);
+    });
+    modelObj[folder] = bookshelf;
+  }
 });
-
 module.exports = modelObj;
