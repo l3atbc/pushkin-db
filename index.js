@@ -76,5 +76,5 @@ amqp.connect(process.env.AMPQ_ADDRESS).then(conn =>
     });
   })
 );
-
+// Worker['duck.findQuestion'](2).then(questions => console.log(questions));
 // winston.handleExceptions(winston.transports);
