@@ -6,7 +6,8 @@
   "scripts": {
     "test": "mocha --reporter spec -t 10000 \"**/*.test.js\"",
     "postinstall": "knex migrate:latest",
-    "docs": "jsdoc -c jsdoc.conf.json -t ./node_modules/ink-docstrap/template -R README.md -r worker.js"
+    "docs": "jsdoc -c jsdoc.conf.json -t ./node_modules/ink-docstrap/template -R README.md -r worker.js",
+    "migrations": "knex migrate:latest"
   },
   "keywords": [],
   "author": "",
