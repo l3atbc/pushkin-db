@@ -1,12 +1,13 @@
 const Papa = require('babyparse');
 const fs = require('fs');
-const path = require('path');
 const modelObj = require('../../db');
 const flatten = require('lodash.flatten');
-
+const path = require('path');
 let quiz = path.resolve(__dirname).split('/').pop();
 const db = modelObj[quiz];
-const data = Papa.parseFiles(
+fs.readFileSync(`./seeds/${quiz}/Trials.csv`);
+
+var data = Papa.parseFiles(
   [
     `./seeds/${quiz}/Trials.csv`,
     `./seeds/${quiz}/Questions.csv`,
@@ -15,39 +16,33 @@ const data = Papa.parseFiles(
   ],
   { header: true }
 );
-fs.readFileSync(`./seeds/${quiz}/Trials.csv`);
 const trials = data[0].data;
 let questions = data[1].data;
 let choices = data[2].data;
 let languages = data[3].data;
-let quizName = quiz === 'whichEnglish' ? null : quiz;
 db
-  .knex(`choices`)
+  .knex('choices')
   .del()
   .then(() => {
-    return db.knex(`${quizName}_questions`).del();
+    return db.knex('questions').del();
   })
   .then(() => {
-    if (!quizName) {
-      return db.knex(`userLanguages`).del();
-    }
+    return db.knex('userLanguages').del();
   })
   .then(() => {
-    return db.knex(`${quizName}_responses`).del();
+    return db.knex('responses').del();
   })
   .then(() => {
-    return db.knex(`${quizName}_users`).del();
+    return db.knex('users').del();
   })
   .then(() => {
-    return db.knex(`${quizName}_trials`).del();
+    return db.knex('trials').del();
   })
   .then(() => {
-    if (!quizName) {
-      return db.knex(`languages`).del();
-    }
+    return db.knex('languages').del();
   })
   .then(() => {
-    return db.knex(`${quizName}_trials`).insert(trials).returning('*');
+    return db.knex('trials').insert(trials).returning('*');
   })
   .then(rows => {
     const allQuestions = rows.map(trial => {
@@ -59,10 +54,7 @@ db
           return question;
         });
     });
-    return db
-      .knex(`${quizName}_questions`)
-      .insert(flatten(allQuestions))
-      .returning('*');
+    return db.knex('questions').insert(flatten(allQuestions)).returning('*');
   })
   .then(rows => {
     const allChoices = rows.map(question => {
@@ -74,15 +66,10 @@ db
           return choice;
         });
     });
-    return db
-      .knex(`${quizName}_choices`)
-      .insert(flatten(allChoices))
-      .returning('*');
+    return db.knex('choices').insert(flatten(allChoices)).returning('*');
   })
   .then(() => {
-    if (!quizName) {
-      return db.knex(`languages`).insert(languages).returning('*');
-    }
+    return db.knex('languages').insert(languages).returning('*');
   })
   .then(data => {
     console.log(data);
