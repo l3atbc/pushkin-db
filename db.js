@@ -25,18 +25,15 @@ knex.on('query-response', function(one, two, three) {
   return db2('transactions').insert(obj).then();
 });
 
-// instantiate bookshelf models
-var fs = require('fs');
+const fs = require('fs');
 
 // registry plugin to handle models that reference each other
-// more info available at: https://github.com/tgriesser/bookshelf/wiki/Plugin:-Model-Registry
-
 // require all models and pass in db connection
 
 const modelObj = {};
-var modelDirectories = fs.readdirSync('./models');
+const modelDirectories = fs.readdirSync('./models');
 modelDirectories.forEach(function(folder) {
-  var bookshelf = require('bookshelf')(knex);
+  const bookshelf = require('bookshelf')(knex);
   bookshelf.plugin('registry');
   const models = fs.readdirSync(`./models/${folder}`);
   models.forEach(model => {
