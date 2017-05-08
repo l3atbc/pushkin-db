@@ -9,7 +9,6 @@ const Papa = require('babyparse');
  * **These methods are created automatically based off what it defined by bookshelf**
  * @class Worker
  */
-// create${duck5_question}
 function Worker() {
   let quizzes = Object.keys(modelObj);
   quizzes.forEach(quiz => {
@@ -37,7 +36,7 @@ function Worker() {
      * @fulfill {Object}
      * @reject {Error}
      * @example
-     * createUser({ name: "Methuselah", age: 1000 })
+     * whichEnglish.createUser({ name: "Methuselah", age: 1000 })
      */
       this[`${quiz}.create${modelName}`] = function(data) {
         return new Model(data).save().then(data => {
@@ -54,8 +53,7 @@ function Worker() {
      * @fulfill {Object} - The found model
      * @reject {Error}
      * @example
-     *
-     * findUser(1, ['posts'])
+     * whichEnglish.findUser(1, ['posts'])
      */
       this[`${quiz}.find${modelName}`] = function(id, relations) {
         if (Array.isArray(relations) && relations.length) {
@@ -85,8 +83,7 @@ function Worker() {
      * @fulfill {Object} - The newly updated model
      * @reject {Error}
      * @example
-     *
-     * updateUser(1, { age: 969 })
+     * whichEnglish.updateUser(1, { age: 969 })
      */
       this[`${quiz}.update${modelName}`] = function(id, data) {
         return Model.where({ id: id })
@@ -100,7 +97,7 @@ function Worker() {
      * @param {Number} id - the id of the model to be deleted
      * @returns {Number} 0 if success
      * @example
-     * deleteUser(1);
+     * whichEnglish.deleteUser(1);
      */
       this[`${quiz}.delete${modelName}`] = id => {
         return new Model({ id }).destroy().then(model => {
@@ -117,7 +114,7 @@ function Worker() {
      * @fulfill {Object[]} - An array of models returned
      * @reject {Error}
      * @example
-     * queryModel([
+     * whichEnglish.queryModel([
      *  ['where', 'other_id', '=', '5'],
      *  ['where', 'name', '=', 'foo']
      * ],
@@ -143,7 +140,7 @@ function Worker() {
      * @fulfill {Object[]} - an array of results
      * @reject {Error}
      * @example
-     * rawUser([
+     * whichEnglish.rawUser([
      *   ['where', 'name', '=', 'Methuselah'],
      *   ['where', 'age', '>', 900 ],
      * ])
@@ -164,15 +161,15 @@ function Worker() {
         return Model.fetchAll().then(data => data.toJSON());
       };
       /**
-   * Return all models in DB
    * @method Worker#getInitialQuestions
    * @param {string} trialName - The name of the trial looking for inital questions for
    * @returns {Promise}
+   * @example
+   * whichEnglish.getInitialQuestions()
    * @fulfill {Object[]} -   questions for that Trial
    * @reject {Error}
-   * @todo Make this query on the trial Name
    */
-      this[`${quiz}.getInitialQuestions`] = trialName => {
+      this[`${quiz}.getInitialQuestions`] = () => {
         return db
           .model('Question')
           .forge()
@@ -190,6 +187,14 @@ function Worker() {
             });
           });
       };
+      /**
+   * Returns user responses in csv format
+   * @method Worker#getResponseCsv
+   * @returns {Promise}
+   * @fulfill {Object[]} -   an array of response data
+   * @reject {Error}
+   * @todo Make this query on the trial Name
+   */
       this.getResponseCsv = () => {
         return db
           .knex(`${quiz}_users`)
