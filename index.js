@@ -49,7 +49,6 @@ amqp
                 winston.log('reply_to', msg.replyTo);
                 winston.log('method', method);
 
-
                 //  check that this method is defined on the Worker
                 if (typeof Worker[method] === 'undefined') {
                   winston.error(rpc);
@@ -92,7 +91,7 @@ amqp
                   const rpc = JSON.parse(msg.content.toString('utf8'));
                   // Data is returned but not used for anything
                   const method = `${quizName}.${rpc.method}`;
-                  winston.info('method', method)
+                  winston.info('method', method);
                   return Worker[method]
                     .apply(Worker, rpc.arguments)
                     .then(data => {
@@ -112,5 +111,3 @@ amqp
     console.log(err.stack);
     winston.error(err.message);
   });
-
-// winston.handleExceptions(winston.transports);
