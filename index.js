@@ -3,7 +3,12 @@ const winston = require('winston');
 const Worker = require('./worker');
 const DB_WRITE_QUEUE = '_db_write';
 const DB_RPC_WORKER = '_rpc_worker';
-const quizzes = ['whichenglish', 'verbcorner'];
+const fs = require('fs');
+const path = require('path');
+
+const quizzes = fs
+  .readdirSync(path.resolve(__dirname, './models'))
+  .map(folder => folder.toLowerCase());
 
 // create the connection
 amqp
