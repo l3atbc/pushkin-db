@@ -61,7 +61,7 @@ amqp
                 }
                 // call the Worker with the defined method
                 return Worker[method]
-                  .apply(Worker, rpc.arguments)
+                  .apply(Worker, rpc.params)
                   .then(data => {
                     winston.info('Worker result', data);
                     // send to the queue with the original replyTo,
@@ -93,7 +93,7 @@ amqp
                   const method = `${quizName}.${rpc.method}`;
                   winston.info('method', method);
                   return Worker[method]
-                    .apply(Worker, rpc.arguments)
+                    .apply(Worker, rpc.params)
                     .then(data => {
                       winston.info('was saved in db', data);
                       return ch.ack(msg);
