@@ -162,7 +162,6 @@ function Worker() {
       };
       /**
    * @method Worker#getInitialQuestions
-   * @param {string} trialName - The name of the trial looking for inital questions for
    * @returns {Promise}
    * @example
    * whichEnglish.getInitialQuestions()
