@@ -246,7 +246,10 @@ function Worker() {
    * nativeLanguages: ["Hebrew"]
    * })
    */
-    this.setUserLanguages = (userId, { primaryLanguages, nativeLanguages }) => {
+    this[`${quiz}.setUserLanguages`] = (
+      userId,
+      { primaryLanguages, nativeLanguages }
+    ) => {
       return Promise.all(
         primaryLanguages.map(lang =>
           db.knex
@@ -283,9 +286,8 @@ function Worker() {
    * @fulfill {Object[]} - an array of the top 3 languages for this user
    * @rejects {Error}
    */
-    this.getResults = userId => {
-      console.log('GET RESULTS CALLED');
 
+    this[`${quiz}.getResults`] = userId => {
       return Promise.resolve([
         {
           name: 'English'
