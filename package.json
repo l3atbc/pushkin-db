@@ -1,14 +1,13 @@
 {
-  "name": "games-with-words-db-writer",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
     "test": "mocha --reporter spec -t 10000 \"**/*.test.js\"",
-    "postinstall": "knex migrate:latest",
     "docs": "jsdoc -c jsdoc.conf.json -t ./node_modules/ink-docstrap/template -R README.md -r worker.js",
     "migrations": "knex migrate:latest",
-    "rollback": "knex migrate:rollback"
+    "rollback": "knex migrate:rollback",
+    "start": "node index.js"
   },
   "keywords": [],
   "author": "",
