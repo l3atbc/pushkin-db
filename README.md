@@ -277,3 +277,38 @@ Get the results from the DB
 | Param | Type | Description |
 | --- | --- | --- |
 | userId | <code>number</code> | the user whose results you are grabbing |
+
+# Seed Quiz
+#### IMPORTANT! Before you start ...
+Please ensure all things listed below: 
+- make sure pushkin docker container is running. please execute `docker-compose -f docker-compose.debug.yml up` in your main `pushkin` folder.
+
+- make sure you’ve properly created a model `pushkin generate model [yourQuizName]`, all of the migration files, model files and seed files could be found under `pushkin-db/migrations`, `pushkin-db/models`, and `pushkin-db/seeds`.
+
+- make sure you’ve properly filled out all of your seed csv files in `pushkin-db/seeds/[yourQuizName]`. Please double make sure you have the correct trial name in `Questions.csv`, this handles the relation between a trial and it’s questions/choices
+
+- make sure you’ve ran your migrations after the model is created
+
+#### Instructions
+After you've ensured all listed in Before you start section of this read me, you are ready to seed a quiz: 
+1. bash into pushkin_db-worker_1 : `bash -c "clear && docker exec -it pushkin_db-worker_1 sh”`
+2. execute `node seeder.js [yourQuizName]` example `node seeder.js whichenglish`. When you are running this command, make sure [yourQuizName] matches the model you’ve created for this quiz. whichenglish is not the same as whichEnglish.
+3. if you see "done seeding!" in your terminal, you are all done!
+
+#### How does it work:
+long story short, when you are generating the model for your quiz, it grabs the seeds templates and copies the file over to `pushkin-db/seeds/[yourQuizName]`. there will be a `index.js` in each of the models you’ve generated. By looking into the csv files in the current quiz folder, this file inserts the proper data into each table corresponding to the current quiz. As you can see, each of these `index.js` files exports a function for the main seeder.js to use. 
+
+The main seeder.js listens to the command `node seeder.js [yourQuizName]`, it grabs the second argument which is `yourQuizName` and looks for its corresponding folder in `pushkin-db/seeds/`. After it’ve found the `index.js` in that folder, it simply execute the function that is being exported and run it. That’s it!
+
+#### How to modify your seed files:
+If you are unhappy with the data inserted in the csv files, please feel free to modify them by using a csv tool(recommended), or in your text editor. 
+If you’ve modified your tables, and you need to change the seed files, please go to the quiz seed file your want to change under `pushkin-db/seeds/[yourQuizName]/index.js`.The current setup in these `index.js` files is: 
+- reads the csv files in the current quiz folder
+- deletes any data left in the tables
+- inserts a fresh copy of the csv data to the tables
+
+You could add your code on top of what we have, we are     using `knex` to handle insertions and deletions. As long as it make sense to the tables you’ve modified ;)
+if you just can’t stand the confirmations we currently have when you execute`node seeder.js [yourQuizName]`, simply goto the main `seeder.js` file in `pushkin-db`, you could take out the warnings or mess with the copy change in the warning messages, change their colors, etc. It’s up to you. Seriously. 
+
+#### Extension
+If you’ve changed your table relations, please make sure to change the bookshelf models (`pushkin-db/models/[yourQuizName]`) to match the modified tables! 
