@@ -22,6 +22,34 @@ add custom methods in `worker.js` to do custom functionality
 2. Create/modify the bookshelf models found in `models` directory (they will be automatically sourced in by the db reader)
 3. Create/modify the csv files found in `seeds/`
 
+# Pushkin-db Folder Structure
+pushkin-db consists the following important folders and files: 
+
+`/migrations` 
+- migration files created by `pushkin generate model [yourQuizName]` will be listed in this folder. 
+- `pushkin generate model [yourQuizName]` will create 5 basic tables: `users`, `responses`, `trials`, `questions`, and `choices`
+- The file names are in this format : `[timeStamp]_create_[yourQuizName]_[table].js`
+- example: `migrations/20170515072132_create_whichenglish_trials.js`
+
+`/models`
+- bookshelf models created by `pushkin generate model [yourQuizName]` will be listed in this folder.
+- `pushkin generate model [yourQuizName]` will create 5 basic bookshelf models: `users`, `responses`, `trials`, `questions`, and `choices`
+- bookshelf model files generated are grouped in [yourQuizName] folder under this directory
+- example: `models/whichenglish/user.js`
+
+`/seeds`
+- seed files created by `pushkin generate model [yourQuizName]` will be listed in this folder.
+- `pushkin generate model [yourQuizName]` will create 3 basic CSV templates and a `index.js` file
+- seed files generated are grouped in [yourQuizName] folder under this directory
+- you could fill out these csv files by using a csv editor or your text editor. These data filled in are your actual data for `[yourQuizName]`. When you are filling out these csv files, make sure you have the correct trial name in `Questions.csv`, this handles the relation between a trial and it’s questions/choices
+- example: `seeds/whichenglish/Choice.csv`
+
+`/seeder.js`
+- this is the overarching seeder file that handles seeding [yourQuizName]. Please see Seed Quiz section of this read me for more information
+
+`/worker.js`
+- this file lists all the DB methods used by the routes. Please see `pushkin-api` read me for more information
+
 # Extension
 * Change the timezone to whatever you want by setting the `TZ` env variable in the `Dockerfile`
 * Share and publish other scripts that you may find useful
