@@ -6,6 +6,7 @@ const chalk = require('chalk');
 const quizFolder = quizesDir.filter(currentFolder => {
   return currentFolder === quizName;
 });
+if(quizFolder){
 inquirer
   .prompt([
     {
@@ -64,3 +65,6 @@ inquirer
       process.exit();
     }
   });
+} else {
+  console.log(chalk.red('quiz not found'))
+}
