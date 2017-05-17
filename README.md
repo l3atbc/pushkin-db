@@ -1,4 +1,4 @@
-Pushkin-DB
+# Pushkin-DB
 
 ![Pushkin Logo](http://i.imgur.com/ncRJMJ5.png)
 
@@ -50,7 +50,7 @@ pushkin-db consists the following important folders and files:
 - this is the overarching seeder file that handles seeding [yourQuizName]. Please see Seed Quiz section of this read me for more information
 
 `/worker.js`
-- this file lists all the DB methods used by the routes. Please see `pushkin-api` read me for more information
+- this file lists all the DB methods used by the routes. Please see Worker section of this read me for more information
 
 # Extension
 * Change the timezone to whatever you want by setting the `TZ` env variable in the `Dockerfile`
