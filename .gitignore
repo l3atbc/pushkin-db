@@ -2,3 +2,4 @@ node_modules
 out
 typings
 seeds/Seeds.numbers
+log/
