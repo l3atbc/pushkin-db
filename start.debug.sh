@@ -5,4 +5,4 @@ echo "Rabbitmq loaded"
 npm install -g --silent nodemon
 npm run migrations
 
-nodemon --debug=5858 index.js
+nodemon --inspect=5858 index.js
