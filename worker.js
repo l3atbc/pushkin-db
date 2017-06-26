@@ -194,7 +194,7 @@ function Worker() {
    * @reject {Error}
    * @todo Make this query on the trial Name
    */
-      this.getResponseCsv = () => {
+      this[`${quiz}.getResponseCsv`] = () => {
         return db
           .knex(`${quiz}_users`)
           .join(
@@ -253,7 +253,7 @@ function Worker() {
         primaryLanguages.map(lang =>
           db.knex
             .raw(
-              'INSERT into "userLanguages" ("userId", "primary", "native", "languageId") SELECT ?, ?, ?, id from languages WHERE name = ? RETURNING *',
+              `INSERT into "${quiz}_userLanguages" ("userId", "primary", "native", "languageId") SELECT ?, ?, ?, id from ${quiz}_languages WHERE name = ? RETURNING *`,
               [userId, true, false, lang]
             )
             .then(resp => resp.rows)
@@ -263,7 +263,7 @@ function Worker() {
           nativeLanguages.map(lang =>
             db.knex
               .raw(
-                'INSERT into "userLanguages" ("userId", "primary", "native", "languageId") SELECT ?, ?, ?, id from languages WHERE name = ? RETURNING *',
+                `INSERT into "${quiz}_userLanguages" ("userId", "primary", "native", "languageId") SELECT ?, ?, ?, id from ${quiz}_languages WHERE name = ? RETURNING *`,
                 [userId, false, true, lang]
               )
               .then(resp => resp.rows)
