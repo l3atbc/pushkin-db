@@ -1,9 +1,0 @@
-[submodule "seeds"]
-	path = seeds
-	url = https://github.com/gameswithwords/seeds.git
-[submodule "models"]
-	path = models
-	url = https://github.com/gameswithwords/models.git
-[submodule "migrations"]
-	path = migrations
-	url = https://github.com/gameswithwords/migrations.git
