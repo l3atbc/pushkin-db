@@ -2,10 +2,12 @@
 
 exports.up = function(knex) {
   return knex.schema.createTable('listener_responses', table => {
-    table.increments().primary();
-    table.timestamps();
-    table.integer('userId').references('id').inTable('listener_users');
-    table.integer('choiceId').references('id').inTable('listener_choices').onDelete('CASCADE');
+    table.increments('id').primary();
+    table.integer('user_id').references('id').inTable('listener_users');
+    table.string('stimulus').references('stimulus').inTable('listener_stimuli');
+    table.json('data_string');
+    table.timestamp('created_at');
+    table.timestamp('updated_at');
   });
 };
 

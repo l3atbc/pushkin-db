@@ -1,8 +1,8 @@
 exports.up = function(knex) {
   return knex.schema.createTable('listener_users', table => {
-    table.increments().primary();
-    table.timestamps();
-    table.string('name');
+    table.increments('id').primary();
+    table.timestamp('created_at');
+    table.timestamp('updated_at');
   });
 };
 

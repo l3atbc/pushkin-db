@@ -1,11 +1,13 @@
 module.exports = db => {
   const Response = db.Model.extend({
     tableName: 'listener_responses',
-    question() {
-      return this.belongsTo('Choice', 'choiceId');
+    idAttribute: 'id',
+    hasTimestamps: true,
+    user: function() {
+      return this.belongsTo('User', 'user_id', 'id');
     },
-    user() {
-      return this.belongsTo('User', 'userId');
+    stimulus: function() {
+      return this.belongsTo('Stimulus', 'stimulus', 'stimulus')
     }
   });
   return db.model('Response', Response);

@@ -39,8 +39,12 @@ function Worker() {
      * whichEnglish.createUser({ name: "Methuselah", age: 1000 })
      */
       this[`${quiz}.create${modelName}`] = function(data) {
-        return new Model(data).save().then(data => {
+        return new Model(data).save()
+        .then(data => {
           return data.toJSON();
+        })
+        .catch(error => {
+          console.log(error);
         });
       };
       /**
@@ -64,6 +68,9 @@ function Worker() {
                 return data.toJSON();
               }
               return null;
+            })
+            .catch(error => {
+              console.log(error);
             });
         }
         return Model.where({ id: id }).fetch().then(data => {
@@ -71,6 +78,9 @@ function Worker() {
             return data.toJSON();
           }
           return null;
+        })
+        .catch(error => {
+          console.log(error);
         });
       };
       /**
@@ -85,10 +95,13 @@ function Worker() {
      * @example
      * whichEnglish.updateUser(1, { age: 969 })
      */
-      this[`${quiz}.update${modelName}`] = function(id, data) {
-        return Model.where({ id: id })
+      this[`${quiz}.update${modelName}`] = function(whereObj, data) {
+        return Model.where(whereObj)
           .save(data, { patch: true })
-          .then(updated => updated.toJSON());
+          .then(updated => updated.toJSON())
+          .catch(error => {
+            console.log(error);
+          });
       };
       /**
      *
@@ -102,6 +115,9 @@ function Worker() {
       this[`${quiz}.delete${modelName}`] = id => {
         return new Model({ id }).destroy().then(model => {
           return 0;
+        })
+        .catch(error => {
+          console.log(error);
         });
       };
       /**
@@ -128,9 +144,15 @@ function Worker() {
         if (relations) {
           return p
             .fetchAll({ withRelated: relations })
-            .then(data => data.toJSON());
+            .then(data => data.toJSON())
+            .catch(error => {
+              console.log(error);
+            });
         }
-        return p.fetchAll().then(data => data.toJSON());
+        return p.fetchAll().then(data => data.toJSON())
+        .catch(error => {
+          console.log(error);
+        });
       };
       /**
      * Allows raw queries on DB
@@ -146,7 +168,10 @@ function Worker() {
      * ])
      */
       this[`${quiz}.raw${modelName}`] = query => {
-        return db.knex.raw(query).then(resp => resp.rows);
+        return db.knex.raw(query).then(resp => resp.rows)
+        .catch(error => {
+          console.log(error);
+        });
       };
       /**
      * Return all models in DB
@@ -158,7 +183,10 @@ function Worker() {
      * allUsers()
      */
       this[`${quiz}.all${modelName}s`] = () => {
-        return Model.fetchAll().then(data => data.toJSON());
+        return Model.fetchAll().then(data => data.toJSON())
+        .catch(error => {
+          console.log(error);
+        });
       };
       /**
    * @method Worker#getInitialQuestions
@@ -168,24 +196,101 @@ function Worker() {
    * @fulfill {Object[]} -   questions for that Trial
    * @reject {Error}
    */
-      this[`${quiz}.getInitialQuestions`] = () => {
+      this[`${quiz}.getInitialStimulus`] = () => {
         return db
-          .model('Question')
+          .model('Stimulus')
           .forge()
           .query(qb => {
-            qb.offset(0).limit(2);
+            qb.offset(0).limit(1);
           })
-          .fetchAll({ withRelated: 'choices' })
+          .fetchAll()
           .then(data => {
             return db.model('User').forge().save().then(user => {
               const json = data.toJSON();
               return {
-                questions: json,
+                stimulus: json,
                 user: user.toJSON()
               };
             });
+          })
+          .catch(error => {
+            console.log(error);
           });
       };
+
+      this[`${quiz}.getAllStimuli`] = () => {
+        return db
+          .model('Stimulus')
+          .forge()
+          .query(qb => {
+            qb.offset(0);
+          })
+          .fetchAll()
+          .then(data => {
+            return db.model('User').forge().save().then(user => {
+              const json = data.toJSON();
+              return {
+                stimuli: json,
+                user: user.toJSON()
+              };
+            });
+          })
+          .catch(error => {
+            console.log(error);
+          });
+      };
+
+      // get all stimuli in ascending order by int columb num_responses
+      // this[`${quiz}.getAllStimuliAsc`] = () => {
+      //   return db
+      //     .model('Stimulus')
+      //     .forge()
+      //     .orderBy('num_responses', 'ASC')
+      //     .query(qb => {
+      //       qb.offset(0);
+      //     })
+      //     .fetchAll()
+      //     .then(data => {
+      //       return db.model('User').forge().save().then(user => {
+      //         const json = data.toJSON();
+      //         return {
+      //           stimuli: json,
+      //           user: user.toJSON()
+      //         };
+      //       });
+      //     })
+      //     .catch(error => {
+      //       console.log(error);
+      //     });
+      // };
+
+      // return all stimuli as an array of the actual stims, as opposed to an array of db objects
+      // this[`${quiz}.getAllStimuliArr`] = () => {
+      //   return db
+      //     .model('Stimulus')
+      //     .forge()
+      //     .query(qb => {
+      //       qb.offset(0);
+      //     })
+      //     .fetchAll()
+      //     .then(data => {
+      //       const json = data.toJSON();
+      //       let arr = [];
+      //       for (let i = 0; i < json.length; i++) {
+      //           arr.push(json[i]['stimulus']);
+      //       }
+      //       return db.model('User').forge().save().then(user => {
+      //         return {
+      //           stimuli: arr,
+      //           user: user.toJSON()
+      //         };
+      //       });
+      //     })
+      //     .catch(error => {
+      //       console.log(error);
+      //     });
+      // };
+
       /**
    * Returns user responses in csv format
    * @method Worker#getResponseCsv
@@ -194,6 +299,7 @@ function Worker() {
    * @reject {Error}
    * @todo Make this query on the trial Name
    */
+
       this[`${quiz}.getResponseCsv`] = () => {
         return db
           .knex(`${quiz}_users`)
@@ -225,6 +331,9 @@ function Worker() {
           )
           .then(data => {
             return Papa.unparse(data);
+          })
+          .catch(error => {
+            console.log(error);
           });
       };
     });
@@ -274,6 +383,9 @@ function Worker() {
             .where({ id: userId })
             .fetch({ withRelated: ['userLanguages.language'] })
             .then(userData => userData.toJSON());
+        })
+        .catch(error => {
+          console.log(error);
         });
       });
     };

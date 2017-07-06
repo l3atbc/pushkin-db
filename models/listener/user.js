@@ -1,19 +1,10 @@
 module.exports = db => {
   const User = db.Model.extend({
     tableName: 'listener_users',
-    idAttributes: 'id',
-    responses() {
-      return this.hasMany('Response', 'userId');
-    },
-    userLanguages() {
-      return this.hasMany('UserLanguage', 'userId');
-    },
-    languages() {
-      return this.hasMany('Language', 'userId').through(
-        'UserLanguage',
-        'id',
-        'trash'
-      );
+    idAttribute: 'id',
+    hasTimestamps: true,
+    responses: function() {
+      return this.hasMany('Response', 'user_id', 'id');
     }
   });
   return db.model('User', User);
