@@ -35,14 +35,13 @@ modelDirectories.forEach(function(folder) {
   const isFolder = fs.lstatSync(`./models/${folder}`).isDirectory();
 
   if (isFolder) {
-    const lowerCase = folder.toLowerCase();
     const bookshelf = require('bookshelf')(knex);
     bookshelf.plugin('registry');
     const models = fs.readdirSync(`./models/${folder}`);
     models.forEach(model => {
       require(`./models/${folder}/${model}`)(bookshelf);
     });
-    modelObj[lowerCase] = bookshelf;
+    modelObj[folder] = bookshelf;
   }
 });
 module.exports = modelObj;

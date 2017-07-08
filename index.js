@@ -10,8 +10,7 @@ const quizzes = fs
   .readdirSync(path.resolve(__dirname, './models'))
   .filter(folder =>
     fs.lstatSync(path.resolve(__dirname, './models', folder)).isDirectory()
-  )
-  .map(folder => folder.toLowerCase());
+  );
 
 // create the connection
 amqp
