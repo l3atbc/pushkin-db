@@ -167,7 +167,7 @@ function Worker() {
      *   ['where', 'age', '>', 900 ],
      * ])
      */
-      this[`${quiz}.raw${modelName}`] = query => {
+      this[`${quiz}.raw`] = query => {
         return db.knex.raw(query).then(resp => resp.rows)
         .catch(error => {
           console.log(error);

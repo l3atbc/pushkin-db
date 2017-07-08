@@ -1,10 +1,9 @@
 // const knex = require('knex')(require('./knex.config.js'));
 
 exports.up = function(knex) {
-  return knex.schema.createTable('listener_responses', table => {
+  return knex.schema.createTable('ListenerQuiz_responses', table => {
     table.increments('id').primary();
-    table.integer('user_id').references('id').inTable('listener_users');
-    table.string('stimulus').references('stimulus').inTable('listener_stimuli');
+    table.integer('user_id').references('id').inTable('ListenerQuiz_users');
     table.json('data_string');
     table.timestamp('created_at');
     table.timestamp('updated_at');
@@ -12,5 +11,5 @@ exports.up = function(knex) {
 };
 
 exports.down = function(knex) {
-  return knex.schema.dropTable('listener_responses');
+  return knex.schema.dropTable('ListenerQuiz_responses');
 };

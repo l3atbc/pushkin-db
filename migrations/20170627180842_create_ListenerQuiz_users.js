@@ -1,5 +1,5 @@
 exports.up = function(knex) {
-  return knex.schema.createTable('listener_users', table => {
+  return knex.schema.createTable('ListenerQuiz_users', table => {
     table.increments('id').primary();
     table.timestamp('created_at');
     table.timestamp('updated_at');
@@ -7,5 +7,5 @@ exports.up = function(knex) {
 };
 
 exports.down = function(knex) {
-  return knex.schema.dropTable('listener_users');
+  return knex.schema.dropTable('ListenerQuiz_users');
 };

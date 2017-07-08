@@ -1,6 +1,6 @@
 module.exports = db => {
-  const Response = db.Model.extend({
-    tableName: 'listener_responses',
+  const StimulusResponse = db.Model.extend({
+    tableName: 'ListenerQuiz_stimulusResponses',
     idAttribute: 'id',
     hasTimestamps: true,
     user: function() {
@@ -10,5 +10,5 @@ module.exports = db => {
       return this.belongsTo('Stimulus', 'stimulus', 'stimulus')
     }
   });
-  return db.model('Response', Response);
+  return db.model('StimulusResponse', StimulusResponse);
 };
