@@ -15,7 +15,6 @@ db2.raw('select 1+1 as result').then(() => {
 });
 
 // whenever there is a query, save result in second db
-// whenever there is a query, save result in second db
 knex.on('query-response', function(one, two, three) {
   const obj = {
     bindings: three.toSQL().bindings,
