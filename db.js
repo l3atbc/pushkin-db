@@ -15,7 +15,6 @@ db2.raw('select 1+1 as result').then(() => {
 });
 
 // whenever there is a query, save result in second db
-// whenever there is a query, save result in second db
 knex.on('query-response', function(one, two, three) {
   const obj = {
     bindings: three.toSQL().bindings,
@@ -35,14 +34,13 @@ modelDirectories.forEach(function(folder) {
   const isFolder = fs.lstatSync(`./models/${folder}`).isDirectory();
 
   if (isFolder) {
-    const lowerCase = folder.toLowerCase();
     const bookshelf = require('bookshelf')(knex);
     bookshelf.plugin('registry');
     const models = fs.readdirSync(`./models/${folder}`);
     models.forEach(model => {
       require(`./models/${folder}/${model}`)(bookshelf);
     });
-    modelObj[lowerCase] = bookshelf;
+    modelObj[folder] = bookshelf;
   }
 });
 module.exports = modelObj;
