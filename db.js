@@ -20,7 +20,9 @@ knex.on('query-response', function(one, two, three) {
     bindings: three.toSQL().bindings,
     query: three.toSQL().sql
   };
-  return db2('transactions').insert(obj).then();
+  return db2('transactions')
+    .insert(obj)
+    .then();
 });
 
 const fs = require('fs');

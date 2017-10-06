@@ -5,6 +5,7 @@ const DB_RPC_WORKER = '_rpc_worker';
 const fs = require('fs');
 const path = require('path');
 const logger = require('./logger');
+logger.info(Object.keys(Worker));
 
 const quizzes = fs
   .readdirSync(path.resolve(__dirname, './models'))
@@ -46,11 +47,11 @@ amqp
                 // parse the message into a javascript object
                 const rpc = JSON.parse(msg.content.toString('utf8'));
                 const method = `${quizName}.${rpc.method}`;
-                logger.log('db_rpc_worker', { rpc });
-                logger.log('correlation_id', msg.correlationId);
-                logger.log('routing_key', msg.routingKey);
-                logger.log('reply_to', msg.replyTo);
-                logger.log('method', method);
+                logger.info('db_rpc_worker', { rpc });
+                logger.info('correlation_id', msg.correlationId);
+                logger.info('routing_key', msg.routingKey);
+                logger.info('reply_to', msg.replyTo);
+                logger.info('method', method);
 
                 //  check that this method is defined on the Worker
                 if (typeof Worker[method] === 'undefined') {
@@ -69,7 +70,6 @@ amqp
                   // pass it back with the correlation ID given
                   logger.log('replyTo', msg.properties.replyTo);
                   logger.log('correlationId', msg.properties.correlationId);
-                  ch.sendToQueue('rob', new Buffer('garbage'));
                   ch.sendToQueue(
                     msg.properties.replyTo,
                     new Buffer(JSON.stringify(data)),

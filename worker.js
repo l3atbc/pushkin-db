@@ -39,13 +39,14 @@ function Worker() {
      * whichEnglish.createUser({ name: "Methuselah", age: 1000 })
      */
       this[`${quiz}.create${modelName}`] = function(data) {
-        return new Model(data).save()
-        .then(data => {
-          return data.toJSON();
-        })
-        .catch(error => {
-          console.log(error);
-        });
+        return new Model(data)
+          .save()
+          .then(data => {
+            return data.toJSON();
+          })
+          .catch(error => {
+            console.log(error);
+          });
       };
       /**
      *
@@ -73,15 +74,17 @@ function Worker() {
               console.log(error);
             });
         }
-        return Model.where({ id: id }).fetch().then(data => {
-          if (data) {
-            return data.toJSON();
-          }
-          return null;
-        })
-        .catch(error => {
-          console.log(error);
-        });
+        return Model.where({ id: id })
+          .fetch()
+          .then(data => {
+            if (data) {
+              return data.toJSON();
+            }
+            return null;
+          })
+          .catch(error => {
+            console.log(error);
+          });
       };
       /**
      *
@@ -113,12 +116,14 @@ function Worker() {
      * whichEnglish.deleteUser(1);
      */
       this[`${quiz}.delete${modelName}`] = id => {
-        return new Model({ id }).destroy().then(model => {
-          return 0;
-        })
-        .catch(error => {
-          console.log(error);
-        });
+        return new Model({ id })
+          .destroy()
+          .then(model => {
+            return 0;
+          })
+          .catch(error => {
+            console.log(error);
+          });
       };
       /**
      *
@@ -149,10 +154,12 @@ function Worker() {
               console.log(error);
             });
         }
-        return p.fetchAll().then(data => data.toJSON())
-        .catch(error => {
-          console.log(error);
-        });
+        return p
+          .fetchAll()
+          .then(data => data.toJSON())
+          .catch(error => {
+            console.log(error);
+          });
       };
       /**
      * Allows raw queries on DB
@@ -168,10 +175,12 @@ function Worker() {
      * ])
      */
       this[`${quiz}.raw`] = query => {
-        return db.knex.raw(query).then(resp => resp.rows)
-        .catch(error => {
-          console.log(error);
-        });
+        return db.knex
+          .raw(query)
+          .then(resp => resp.rows)
+          .catch(error => {
+            console.log(error);
+          });
       };
       /**
      * Return all models in DB
@@ -183,10 +192,11 @@ function Worker() {
      * allUsers()
      */
       this[`${quiz}.all${modelName}s`] = () => {
-        return Model.fetchAll().then(data => data.toJSON())
-        .catch(error => {
-          console.log(error);
-        });
+        return Model.fetchAll()
+          .then(data => data.toJSON())
+          .catch(error => {
+            console.log(error);
+          });
       };
       /**
    * @method Worker#getInitialQuestions
@@ -205,19 +215,30 @@ function Worker() {
           })
           .fetchAll()
           .then(data => {
-            return db.model('User').forge().save().then(user => {
-              const json = data.toJSON();
-              return {
-                stimulus: json,
-                user: user.toJSON()
-              };
-            });
+            return db
+              .model('User')
+              .forge()
+              .save()
+              .then(user => {
+                const json = data.toJSON();
+                return {
+                  stimulus: json,
+                  user: user.toJSON()
+                };
+              });
           })
           .catch(error => {
             console.log(error);
           });
       };
-
+      this[`${quiz}.allForumTopic`] = () => {
+        return db
+          .model('ForumTopic')
+          .fetchAll()
+          .then(data => {
+            return data.toJSON();
+          });
+      };
       this[`${quiz}.getAllStimuli`] = () => {
         return db
           .model('Stimulus')
@@ -227,13 +248,17 @@ function Worker() {
           })
           .fetchAll()
           .then(data => {
-            return db.model('User').forge().save().then(user => {
-              const json = data.toJSON();
-              return {
-                stimuli: json,
-                user: user.toJSON()
-              };
-            });
+            return db
+              .model('User')
+              .forge()
+              .save()
+              .then(user => {
+                const json = data.toJSON();
+                return {
+                  stimuli: json,
+                  user: user.toJSON()
+                };
+              });
           })
           .catch(error => {
             console.log(error);
@@ -377,16 +402,17 @@ function Worker() {
               )
               .then(resp => resp.rows)
           )
-        ).then(stuff => {
-          return db
-            .model('User')
-            .where({ id: userId })
-            .fetch({ withRelated: ['userLanguages.language'] })
-            .then(userData => userData.toJSON());
-        })
-        .catch(error => {
-          console.log(error);
-        });
+        )
+          .then(stuff => {
+            return db
+              .model('User')
+              .where({ id: userId })
+              .fetch({ withRelated: ['userLanguages.language'] })
+              .then(userData => userData.toJSON());
+          })
+          .catch(error => {
+            console.log(error);
+          });
       });
     };
     /**
@@ -460,7 +486,8 @@ function Worker() {
 
 // returns the intersection between 2 arrays
 function intersect_safe(a, b) {
-  let ai = 0, bi = 0;
+  let ai = 0,
+    bi = 0;
   let result = [];
   while (ai < a.length && bi < b.length) {
     if (a[ai] < b[bi]) {
