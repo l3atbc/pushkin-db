@@ -1,16 +1,16 @@
 exports.up = function(knex, Promise) {
-  return knex.schema.createTable('forum-responses', table => {
+  return knex.schema.createTable('forum-comments', table => {
     table.increments('id').primary();
-    table.string('auth0_uid');
+    table.string('auth0_id');
     table.string('responses');
     table.timestamp('created_at');
     table
-      .integer('topic_id')
+      .integer('post_id')
       .references('id')
-      .inTable('forum-topics');
+      .inTable('forum-posts');
   });
 };
 
 exports.down = function(knex, Promise) {
-  return knex.schema.dropTable('forum-responses');
+  return knex.schema.dropTable('forum-comments');
 };
