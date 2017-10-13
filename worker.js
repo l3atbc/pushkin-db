@@ -231,15 +231,83 @@ function Worker() {
             console.log(error);
           });
       };
-      this[`${quiz}.allForumTopic`] = () => {
+      this[`${quiz}.allForumPost`] = () => {
         return db
-          .model('ForumTopic')
+          .model('ForumPost')
           .fetchAll()
           .then(data => {
             return data.toJSON();
           });
       };
-      this[`${quiz}.getAllStimuli`] = () => {
+      this[`${quiz}.createForumPost`] = data => {
+        return new Model(data)
+          .save()
+          .then(resp => {
+            return resp.toJSON();
+          })
+          .catch(error => {
+            console.log(error);
+          });
+      };
+      this[`${quiz}.generateUser`] = (auth0_id, user_id) => {
+        if (auth0_id) {
+          return db
+            .model('User')
+            .where({ auth0_id: auth0_id })
+            .fetch()
+            .then(data => {
+              if (!data) {
+                if (user_id) {
+                  return db
+                    .model('User')
+                    .where({ id: user_id })
+                    .fetch()
+                    .then(model => {
+                      if (!model.toJSON().auth0_id) {
+                        model.set({ auth0_id: auth0_id });
+                        return model.save();
+                      }
+                      return model.toJSON();
+                    });
+                }
+                return db
+                  .model('User')
+                  .forge()
+                  .save({
+                    created_at: new Date(),
+                    updated_at: new Date(),
+                    auth0_id: auth0_id
+                  });
+              } else {
+                return data;
+              }
+            });
+        }
+        return db
+          .model('User')
+          .forge()
+          .save()
+          .then(user => {
+            return user.toJSON();
+          });
+      };
+      this[`${quiz}.updateUser`] = (auth0_id, user_id) => {
+        return db
+          .model('User')
+          .where({ id: user_id })
+          .fetch()
+          .then(model => {
+            if (!model.toJSON().auth0_id) {
+              model.set({ auth0_id: auth0_id });
+              return model.save();
+            }
+            return model.toJSON();
+          })
+          .catch(error => {
+            console.log('fail to update user', error);
+          });
+      };
+      this[`${quiz}.getAllStimuli`] = user => {
         return db
           .model('Stimulus')
           .forge()
@@ -248,74 +316,15 @@ function Worker() {
           })
           .fetchAll()
           .then(data => {
-            return db
-              .model('User')
-              .forge()
-              .save()
-              .then(user => {
-                const json = data.toJSON();
-                return {
-                  stimuli: json,
-                  user: user.toJSON()
-                };
-              });
+            return {
+              stimuli: data.toJSON(),
+              user: user
+            };
           })
           .catch(error => {
             console.log(error);
           });
       };
-
-      // get all stimuli in ascending order by int columb num_responses
-      // this[`${quiz}.getAllStimuliAsc`] = () => {
-      //   return db
-      //     .model('Stimulus')
-      //     .forge()
-      //     .orderBy('num_responses', 'ASC')
-      //     .query(qb => {
-      //       qb.offset(0);
-      //     })
-      //     .fetchAll()
-      //     .then(data => {
-      //       return db.model('User').forge().save().then(user => {
-      //         const json = data.toJSON();
-      //         return {
-      //           stimuli: json,
-      //           user: user.toJSON()
-      //         };
-      //       });
-      //     })
-      //     .catch(error => {
-      //       console.log(error);
-      //     });
-      // };
-
-      // return all stimuli as an array of the actual stims, as opposed to an array of db objects
-      // this[`${quiz}.getAllStimuliArr`] = () => {
-      //   return db
-      //     .model('Stimulus')
-      //     .forge()
-      //     .query(qb => {
-      //       qb.offset(0);
-      //     })
-      //     .fetchAll()
-      //     .then(data => {
-      //       const json = data.toJSON();
-      //       let arr = [];
-      //       for (let i = 0; i < json.length; i++) {
-      //           arr.push(json[i]['stimulus']);
-      //       }
-      //       return db.model('User').forge().save().then(user => {
-      //         return {
-      //           stimuli: arr,
-      //           user: user.toJSON()
-      //         };
-      //       });
-      //     })
-      //     .catch(error => {
-      //       console.log(error);
-      //     });
-      // };
-
       /**
    * Returns user responses in csv format
    * @method Worker#getResponseCsv
