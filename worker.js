@@ -240,6 +240,24 @@ function Worker() {
               return data.toJSON();
             });
         };
+        this[`${quiz}.findForumPost`] = id => {
+          return db
+            .model('ForumPost')
+            .where({ id: id })
+            .fetch()
+            .then(data => {
+              return db
+                .model('ForumComment')
+                .where({ post_id: id })
+                .fetchAll()
+                .then(comments => {
+                  return {
+                    post: data,
+                    comments: comments
+                  };
+                });
+            });
+        };
         this[`${quiz}.createForumPost`] = data => {
           return new Model(data)
             .save()
