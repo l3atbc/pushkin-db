@@ -231,26 +231,6 @@ function Worker() {
             console.log(error);
           });
       };
-      if (CONFIG.forum) {
-        this[`${quiz}.allForumPost`] = () => {
-          return db
-            .model('ForumPost')
-            .fetchAll()
-            .then(data => {
-              return data.toJSON();
-            });
-        };
-        this[`${quiz}.createForumPost`] = data => {
-          return new Model(data)
-            .save()
-            .then(resp => {
-              return resp.toJSON();
-            })
-            .catch(error => {
-              console.log(error);
-            });
-        };
-      }
       this[`${quiz}.generateUser`] = (auth0_id, user_id) => {
         if (auth0_id) {
           return db

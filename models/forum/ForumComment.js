@@ -3,7 +3,7 @@ module.exports = db => {
     tableName: 'forum-comments',
     idAttribute: 'id',
     forumPost: function() {
-      return this.belongsTo('ForumPost');
+      return this.belongsTo('ForumPost', 'post_id', 'id');
     }
   });
   return db.model('ForumComment', ForumComment);
