@@ -3,7 +3,7 @@ exports.up = function(knex, Promise) {
     table.increments('id').primary();
     table.timestamp('created_at');
     table.string('post_subject');
-    table.integer('stim_id');
+    table.json('stim');
     table.string('post_content');
     table.string('auth0_id');
   });
