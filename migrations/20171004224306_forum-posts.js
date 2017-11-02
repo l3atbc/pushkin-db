@@ -6,6 +6,7 @@ exports.up = function(knex, Promise) {
     table.json('stim');
     table.string('post_content');
     table.string('auth0_id');
+    table.string('quiz');
   });
 };
 
