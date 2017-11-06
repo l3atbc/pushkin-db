@@ -16,6 +16,7 @@
     "amqplib": "^0.5.1",
     "babyparse": "^0.4.6",
     "bookshelf": "^0.10.2",
+    "bookshelf-cascade-delete": "^2.0.1",
     "inquirer": "^3.0.6",
     "knex": "^0.12.6",
     "lodash.flatten": "^4.4.0",

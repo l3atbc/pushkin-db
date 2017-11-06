@@ -37,6 +37,8 @@ modelDirectories.forEach(function(folder) {
 
   if (isFolder) {
     const bookshelf = require('bookshelf')(knex);
+    const cascadeDelete = require('bookshelf-cascade-delete');
+    bookshelf.plugin(cascadeDelete);
     bookshelf.plugin('registry');
     const models = fs.readdirSync(`./models/${folder}`);
     models.forEach(model => {

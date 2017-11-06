@@ -116,7 +116,9 @@ function Worker() {
      * whichEnglish.deleteUser(1);
      */
       this[`${quiz}.delete${modelName}`] = id => {
-        return new Model({ id })
+        return db
+          .model(`${modelName}`)
+          .forge({ id })
           .destroy()
           .then(model => {
             return 0;
