@@ -20,13 +20,14 @@ amqp
     return conn.createChannel().then(ch => {
       logger.info('channel created');
       // on SIGINT ensure the channel is closed
-      process.once('SIGINT', function() {
+      process.once('SIGINT', function () {
         conn.close();
       });
 
       //  create a rpc listener on both quizzed
       return Promise.all(
         quizzes.map(quizName => {
+          // the queue name is created by the folders in /models
           const rpc_queue = quizName + DB_RPC_WORKER;
           const write_queue = quizName + DB_WRITE_QUEUE;
           logger.info('in promise all');
@@ -45,39 +46,48 @@ amqp
               return ch.consume(rpc_queue, msg => {
                 // parse the message into a javascript object
                 const rpc = JSON.parse(msg.content.toString('utf8'));
-                const method = `${quizName}.${rpc.method}`;
-                logger.log('db_rpc_worker', { rpc });
-                logger.log('correlation_id', msg.correlationId);
-                logger.log('routing_key', msg.routingKey);
-                logger.log('reply_to', msg.replyTo);
-                logger.log('method', method);
-
-                //  check that this method is defined on the Worker
-                if (typeof Worker[method] === 'undefined') {
-                  logger.error(rpc);
-                  // throw an error otherwise
-                  // TODO: put this in a seperate queue of bad messages.
-                  // possible dead letter exchange: http://www.rabbitmq.com/dlx.html
-                  throw new Error(
-                    `This method ${method} is not defined on the worker`
-                  );
-                }
-                // call the Worker with the defined method
-                return Worker[method].apply(Worker, rpc.params).then(data => {
-                  logger.log('Worker result', data);
-                  // send to the queue with the original replyTo,
-                  // pass it back with the correlation ID given
-                  logger.log('replyTo', msg.properties.replyTo);
-                  logger.log('correlationId', msg.properties.correlationId);
-                  ch.sendToQueue('rob', new Buffer('garbage'));
+                if (rpc.method == 'health') {
                   ch.sendToQueue(
                     msg.properties.replyTo,
-                    new Buffer(JSON.stringify(data)),
+                    new Buffer(JSON.stringify({ status: "healthy", methods: Object.keys(Worker) })),
                     { correlationId: msg.properties.correlationId }
                   );
                   // acknowledge receipt
                   ch.ack(msg);
-                });
+                } else {
+                  const method = `${quizName}.${rpc.method}`;
+                  logger.info('db_rpc_worker', { rpc });
+                  logger.info('correlation_id', msg.correlationId);
+                  logger.info('routing_key', msg.routingKey);
+                  logger.info('reply_to', msg.replyTo);
+                  logger.info('method', method);
+
+                  //  check that this method is defined on the Worker
+                  if (typeof Worker[method] === 'undefined') {
+                    logger.error(rpc);
+                    // throw an error otherwise
+                    // TODO: put this in a seperate queue of bad messages.
+                    // possible dead letter exchange: http://www.rabbitmq.com/dlx.html
+                    throw new Error(
+                      `This method ${method} is not defined on the worker`
+                    );
+                  }
+                  // call the Worker with the defined method
+                  return Worker[method].apply(Worker, rpc.params).then(data => {
+                    logger.log('Worker result', data);
+                    // send to the queue with the original replyTo,
+                    // pass it back with the correlation ID given
+                    logger.log('replyTo', msg.properties.replyTo);
+                    logger.log('correlationId', msg.properties.correlationId);
+                    ch.sendToQueue(
+                      msg.properties.replyTo,
+                      new Buffer(JSON.stringify(data)),
+                      { correlationId: msg.properties.correlationId }
+                    );
+                    // acknowledge receipt
+                    ch.ack(msg);
+                  });
+                }
               });
             })
             .then(() => {

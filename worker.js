@@ -11,6 +11,9 @@ const Papa = require('babyparse');
  */
 function Worker() {
   let quizzes = Object.keys(modelObj);
+  this.health = function(data) {
+    return Promise.resolve({ status: "healthy" })
+  }
   quizzes.forEach(quiz => {
     const db = modelObj[quiz];
     let models = Object.keys(db._models);
